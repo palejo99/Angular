@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { Item } from '../../models/item';
 import { ItemService } from '../../services/item.service';
 
@@ -8,49 +13,58 @@ import { ItemService } from '../../services/item.service';
   styleUrls: ['./items.component.css'],
 })
 export class ItemsComponent implements OnInit {
-  // Variable items de tipo Item, q por def es un obj, y se declara vacío inicialment
   items: Item[] = [];
   total: number = 0;
-
   constructor(private itemService: ItemService) {}
 
   ngOnInit(): void {
-    this.items = this.itemService.getItems();
-    //this.items = [];
-
-    /* {
+    /* this.items = [
+      {
         id: 0,
         title: 'manzana',
-        price: 10.5,
+        price: 20,
         quantity: 4,
-        completed: false,
+        completed: false
       },
-
       {
-        id: 1,
-        title: 'pera',
-        price: 8.5,
-        quantity: 8,
-        completed: true,
-      }, */
+        id: 0,
+        title: 'leche',
+        price: 20,
+        quantity: 4,
+        completed: true
+      }
+    ];*/
 
-    this.getTotal();
+    //this.items = this.itemService.getItems();
+    this.itemService.getItems().subscribe((items) => {
+      this.items = items;
+      this.getTotal();
+    });
   }
 
   deleteItem(item: Item) {
-    this.items = this.items.filter((x) => x.id != item.id);
+    this.items = this.items.filter((i) => i.id != item.id);
+    this.itemService.deleteItem(item).subscribe();
     this.getTotal();
   }
 
+  addItem(item: Item) {
+    console.log(item);
+    this.itemService.addItem(item).subscribe((i) => {
+      this.items.unshift(i);
+      this.getTotal();
+    });
+  }
+
   toggleItem(item: Item) {
+    this.itemService.toggleCompleted(item).subscribe((i) => {});
     this.getTotal();
   }
 
   getTotal() {
     this.total = this.items
-      .filter((item) => !item.completed)
-      .map((item) => item.quantity * item.price)
-      // Inicializada en 0
+      .filter((item) => item.completed === false)
+      .map((item) => item.price * item.quantity)
       .reduce((acc, item) => (acc += item), 0);
   }
 }

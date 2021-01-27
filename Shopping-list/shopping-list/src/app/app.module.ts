@@ -9,6 +9,7 @@ import { ItemComponent } from './components/item/item.component';
 import { TotalComponent } from './components/total/total.component';
 import { AddItemComponent } from './components/add-item/add-item.component';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,7 @@ import { FormsModule } from '@angular/forms';
     TotalComponent,
     AddItemComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule, FormsModule],
+  imports: [BrowserModule, AppRoutingModule, FormsModule, HttpClientModule],
   providers: [],
   bootstrap: [AppComponent],
 })
